@@ -10,6 +10,8 @@ from jax import vmap
 from jax.example_libraries import optimizers
 from matplotlib import pyplot as plt
 
+from data import GenzContinuousDataSet1D, GenzDiscontinuousDataSet1D
+
 
 def random_layer_params(m, n, key, scale=1e-2):
     w_key, b_key = random.split(key)
@@ -110,15 +112,14 @@ def train_stein_network(opt_state, num_epochs: int):
 
 
 def evaluate_model(params, true_integral=None, mc_value=None):
-    x_test = x
-    out = batch_apply_stein(params, x_test, score, apply_u_network)
+    out = batch_apply_stein(params, x_test, score_test, apply_u_network)
     seaborn.set_theme(style="whitegrid")
     palette = itertools.cycle(seaborn.color_palette())
     fig, ax = plt.subplots()
     ax.scatter(x.flatten(), y.flatten(), color=next(palette), label="Training data")
     ax.plot(x_test.flatten(), out.flatten(), color=next(palette), label="Network fit")
     ax.legend()
-    fig.savefig(os.path.join("img", "network_fit.png"), dpi=500)
+    fig.savefig(os.path.join("network_fit.png"), dpi=500)
     print("==========================================")
     if true_integral is not None:
         print(f"True integral value: {true_integral}")
@@ -131,16 +132,16 @@ def evaluate_model(params, true_integral=None, mc_value=None):
 if __name__ == "__main__":
     step_size = 0.01
     num_epochs = 1000
-    batch_size = 1
-    n_targets = 10
     layer_sizes = [[1, 32], [32, 1]]
     params = init_network_params(layer_sizes, random.PRNGKey(0))
-    x = jnp.linspace(-5, 5, 30)[:, None]
-    y = jnp.exp(- x ** 2)
-    y = y / jnp.max(y)
-    score = -x
+    n_targets = 20
+    dataset = GenzDiscontinuousDataSet1D()
+    x, score, y, x_test, score_test = dataset.return_data_set(n_targets)
     opt_init, opt_update, get_params = optimizers.adam(step_size=0.01)
     opt_state = opt_init(params)
 
     params = train_stein_network(opt_state, num_epochs)
-    evaluate_model(params)
+    evaluate_model(params,
+                   true_integral=dataset.true_integration_value(),
+                   mc_value=jnp.mean(y)
+                   )
