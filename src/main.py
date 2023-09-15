@@ -95,7 +95,7 @@ def loss(params, x, y, score, apply_u_network):
 batch_apply_stein = vmap(stein_operator, in_axes=(None, 0, 0, None))
 
 
-def train_stein_network(opt_state, num_epochs: int):
+def train_stein_network(x, score, y, opt_state, opt_update, get_params, num_epochs: int):
     for epoch in range(num_epochs):
         start_time = time.time()
         params = get_params(opt_state)
@@ -111,7 +111,7 @@ def train_stein_network(opt_state, num_epochs: int):
     return params
 
 
-def evaluate_model(params, true_integral=None, mc_value=None):
+def evaluate_model(params, x, y, x_test, score_test, true_integral=None, mc_value=None):
     out = batch_apply_stein(params, x_test, score_test, apply_u_network)
     seaborn.set_theme(style="whitegrid")
     palette = itertools.cycle(seaborn.color_palette())
@@ -122,26 +122,37 @@ def evaluate_model(params, true_integral=None, mc_value=None):
     fig.savefig(os.path.join("network_fit.png"), dpi=500)
     print("==========================================")
     if true_integral is not None:
-        print(f"True integral value: {true_integral}")
-    print(f"Network computed value: {params[-1].item()}")
+        print(f"True integral value: {true_integral.item()}")
+    network_estimate = params[-1].item()
+    print(f"Network computed value: {network_estimate}")
     if mc_value is not None:
         print(f"MC computed value: {mc_value}")
     print("==========================================")
+    return network_estimate
+
+
+def run():
+    params = init_network_params(layer_sizes, prng_key)
+    dataset = data_class()
+    x, score, y, x_test, score_test = dataset.return_data_set(n_targets)
+    opt_init, opt_update, get_params = optimizers.adam(step_size=step_size)
+    opt_state = opt_init(params)
+    params = train_stein_network(x, score, y, opt_state, opt_update, get_params, num_epochs)
+    true_integral = dataset.true_integration_value()
+    mc_estimate = jnp.mean(y)
+    network_estimate = evaluate_model(params, x, y, x_test, score_test,
+                                      true_integral=true_integral,
+                                      mc_value=mc_estimate
+                                      )
+    return network_estimate, mc_estimate, true_integral
 
 
 if __name__ == "__main__":
     step_size = 0.01
     num_epochs = 1000
     layer_sizes = [[1, 32], [32, 1]]
-    params = init_network_params(layer_sizes, random.PRNGKey(0))
     n_targets = 20
-    dataset = GenzDiscontinuousDataSet1D()
-    x, score, y, x_test, score_test = dataset.return_data_set(n_targets)
-    opt_init, opt_update, get_params = optimizers.adam(step_size=0.01)
-    opt_state = opt_init(params)
+    data_class = GenzDiscontinuousDataSet1D
+    prng_key = random.PRNGKey(0)
 
-    params = train_stein_network(opt_state, num_epochs)
-    evaluate_model(params,
-                   true_integral=dataset.true_integration_value(),
-                   mc_value=jnp.mean(y)
-                   )
+    run()
