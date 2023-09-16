@@ -9,6 +9,7 @@ import seaborn
 from data import GenzContinuousDataSet1D
 from main import run
 from options import Options
+from util import PlOTTING_PATH
 
 
 def plot_relative_error():
@@ -22,7 +23,7 @@ def plot_relative_error():
     ax.set_xlabel("#Data Points")
     ax.set_ylabel("Relative Error")
     ax.legend()
-    fig.savefig(os.path.join("relative_error.png"), dpi=500)
+    fig.savefig(os.path.join(PlOTTING_PATH, "relative_error.png"), dpi=500)
     plt.clf()
 
 

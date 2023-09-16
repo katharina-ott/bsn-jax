@@ -12,6 +12,7 @@ from matplotlib import pyplot as plt
 from data import GenzContinuousDataSet1D, GenzProductpeakDataSet1D
 from model import init_network_params, apply_u_network, stein_operator
 from options import Options
+from util import PlOTTING_PATH
 
 
 def loss(params, x, y, score, apply_u_network):
@@ -47,7 +48,7 @@ def evaluate_model(params, x, y, x_test, score_test, true_integral=None, mc_valu
     ax.scatter(x.flatten(), y.flatten(), color=next(palette), label="Training data")
     ax.plot(x_test.flatten(), out.flatten(), color=next(palette), label="Network fit")
     ax.legend()
-    fig.savefig(os.path.join("network_fit.png"), dpi=500)
+    fig.savefig(os.path.join(PlOTTING_PATH, "network_fit.png"), dpi=500)
     plt.clf()
     print("==========================================")
     if true_integral is not None:
