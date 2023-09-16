@@ -9,7 +9,7 @@ from jax import vmap
 from jax.example_libraries import optimizers
 from matplotlib import pyplot as plt
 
-from data import GenzContinuousDataSet1D
+from data import GenzContinuousDataSet1D, GenzProductpeakDataSet1D
 from model import init_network_params, apply_u_network, stein_operator
 from options import Options
 
@@ -48,6 +48,7 @@ def evaluate_model(params, x, y, x_test, score_test, true_integral=None, mc_valu
     ax.plot(x_test.flatten(), out.flatten(), color=next(palette), label="Network fit")
     ax.legend()
     fig.savefig(os.path.join("network_fit.png"), dpi=500)
+    plt.clf()
     print("==========================================")
     if true_integral is not None:
         print(f"True integral value: {true_integral.item()}")
@@ -59,7 +60,7 @@ def evaluate_model(params, x, y, x_test, score_test, true_integral=None, mc_valu
     return network_estimate
 
 
-def run(opts: Options):
+def run(opts: Options, prng_key):
     params = init_network_params(opts.layer_sizes, prng_key)
     dataset = opts.data_class()
     x, score, y, x_test, score_test = dataset.return_data_set(opts.n)
@@ -81,6 +82,7 @@ if __name__ == "__main__":
                    num_epochs=1000,
                    layers_sizes=[[1, 32], [32, 32], [32, 32], [32, 1]],
                    n=32,
-                   data_class=GenzContinuousDataSet1D)
+                   data_class=GenzContinuousDataSet1D
+                   )
 
     run(opts)
