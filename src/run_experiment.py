@@ -30,6 +30,7 @@ def plot_relative_error():
 if __name__ == "__main__":
     prng_key = jax.random.PRNGKey(0)
     opts = Options(step_size=0.01,
+                   method="L-BFGS-B",
                    num_epochs=500,
                    layers_sizes=[[1, 32], [32, 32], [32, 32], [32, 1]],
                    n=5,
