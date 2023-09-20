@@ -12,9 +12,7 @@ from options import Options
 from util import PlOTTING_PATH
 
 
-def plot_relative_error():
-    relative_network_error = np.abs(network_estimate_list - true_value) / true_value
-    relative_mcmc_error = np.abs(mcmc_estimate_list - true_value) / true_value
+def plot_relative_error(n_list, relative_network_error, relative_mcmc_error):
     seaborn.set_theme(style="whitegrid")
     palette = itertools.cycle(seaborn.color_palette())
     fig, ax = plt.subplots()
@@ -28,7 +26,6 @@ def plot_relative_error():
 
 
 if __name__ == "__main__":
-    prng_key = jax.random.PRNGKey(0)
     opts = Options(step_size=0.01,
                    method="L-BFGS-B",
                    num_epochs=500,
@@ -36,17 +33,27 @@ if __name__ == "__main__":
                    n=5,
                    data_class=GenzContinuousDataSet1D
                    )
+    n_list = np.array([5, 10, 20, 40, 80, 160, 320])
+    network_estimate_stack = []
+    mcmc_estimate_stack = []
+    for random_seed in range(3):
+        prng_key = jax.random.PRNGKey(random_seed)
+        network_estimate_list = []
+        mcmc_estimate_list = []
+        for n in n_list:
+            print(f"N: {n}")
+            opts.n = n
+            network_estimate, mcmc_estimate, true_value = run(opts, prng_key)
+            network_estimate_list.append(network_estimate)
+            mcmc_estimate_list.append(mcmc_estimate)
+        mcmc_estimate_stack.append(np.array(mcmc_estimate_list))
+        network_estimate_stack.append(np.array(network_estimate_list))
 
-    n_list = np.array([5, 10, 20, 40, 80, 160])
-    network_estimate_list = []
-    mcmc_estimate_list = []
-    for n in n_list:
-        opts.n = n
-        network_estimate, mcmc_estimate, true_value = run(opts, prng_key)
-        network_estimate_list.append(network_estimate)
-        mcmc_estimate_list.append(mcmc_estimate)
+    mcmc_estimate_stack = np.stack(mcmc_estimate_stack, axis=0)
+    network_estimate_stack = np.stack(network_estimate_stack, axis=0)
+    relative_network_error = np.abs(network_estimate_stack - true_value) / true_value
+    relative_mcmc_error = np.abs(mcmc_estimate_stack - true_value) / true_value
+    relative_network_error_mean = np.mean(relative_network_error, axis=0)
+    relative_mcmc_error_mean = np.mean(relative_mcmc_error, axis=0)
 
-    network_estimate_list = np.array(network_estimate_list)
-    mcmc_estimate_list = np.array(mcmc_estimate_list)
-
-    plot_relative_error()
+    plot_relative_error(n_list, relative_network_error_mean, relative_mcmc_error_mean)

@@ -73,7 +73,7 @@ def loss_param_array(params, x, y, score, apply_u_network, treedef, shapes):
 batch_apply_stein = vmap(stein_operator, in_axes=(None, 0, 0, None))
 
 
-def train_stein_network(x, score, y, params, num_epochs: int):
+def train_stein_network(x, score, y, params, num_epochs: int, step_size: float):
     """
     Optimizes the parameters using the adam optimizer
     :param x:
@@ -83,7 +83,7 @@ def train_stein_network(x, score, y, params, num_epochs: int):
     :param num_epochs:
     :return:
     """
-    opt_init, opt_update, get_params = optimizers.adam(step_size=opts.step_size)
+    opt_init, opt_update, get_params = optimizers.adam(step_size=step_size)
     opt_state = opt_init(params)
     params = get_params(opt_state)
     for epoch in range(num_epochs):
@@ -123,9 +123,11 @@ def train_stein_lbfgs(x, score, y, params, method):
     I was unable to do parameters optimization with L-BFGS in jax.
     This needs to be looked into at a later point.
     """
-    out = scipy.optimize.minimize(fun, x0=params0, method=method, jac=jac, tol=None, options=None)
+    out = scipy.optimize.minimize(fun, x0=params0, method=method, jac=jac, tol=1.e-15,
+                                  options={"maxiter": 2000})
     epoch_time = time.time() - start_time
     print(f"Run time optimization: {epoch_time}")
+    print(f"Optimziations has converged: {out.success}")
     params = unflatten_params(out.x, treedef, shapes)
     return params
 
@@ -139,6 +141,7 @@ def evaluate_model(params, x, y, x_test, score_test, true_integral=None, mc_valu
     ax.plot(x_test.flatten(), out.flatten(), color=next(palette), label="Network fit")
     ax.legend()
     fig.savefig(os.path.join(PlOTTING_PATH, "network_fit.png"), dpi=500)
+    plt.close(fig)
     plt.clf()
     print("==========================================")
     if true_integral is not None:
@@ -156,7 +159,7 @@ def run(opts: Options, prng_key):
     dataset = opts.data_class()
     x, score, y, x_test, score_test = dataset.return_data_set(opts.n)
     if opts.method == "adam":
-        params = train_stein_network(x, score, y, params, opts.num_epochs)
+        params = train_stein_network(x, score, y, params, opts.num_epochs, opts.step_size)
     else:
         params = train_stein_lbfgs(x, score, y, params, opts.method)
     true_integral = dataset.true_integration_value()
