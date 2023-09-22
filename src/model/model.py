@@ -1,5 +1,8 @@
+from typing import List, Tuple
+
 import jax
-from jax import random, numpy as jnp
+from jax import random, numpy as jnp, vmap
+from jax._src.random import PRNGKey
 
 
 def random_layer_params(m, n, key, scale=1e-2):
@@ -11,13 +14,14 @@ def random_theta0(key, scale=1e-2):
     return scale * random.normal(key, (1,))
 
 
-def init_network_params(sizes, key):
+def init_network_params(sizes: List[List], key: PRNGKey) \
+        -> List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray]:
     keys = random.split(key, len(sizes))
-    l = []
+    params = []
     for (m, n), k in zip(sizes[:], keys):
-        l.append(random_layer_params(m, n, k))
-    l.append(random_theta0(key))
-    return l
+        params.append(random_layer_params(m, n, k))
+    params.append(random_theta0(key))
+    return params
 
 
 def activation(x):
@@ -73,3 +77,5 @@ def stein_operator(params, x, score, apply_u_network):
     u = apply_u_network(params, x)
     stein = jnp.dot(score, u) + calc_div_u(params, x, apply_u_network) + theta0
     return stein
+
+batch_apply_stein = vmap(stein_operator, in_axes=(None, 0, 0, None))

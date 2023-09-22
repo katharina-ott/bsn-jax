@@ -1,20 +1,31 @@
-from typing import List, Type
+from dataclasses import dataclass
+from enum import Enum
+from typing import List, Type, Union
 
-from data import IntegrationDataset
+from data import IntegrationDataset, GenzContinuousDataSet1D, GenzDiscontinuousDataSet1D, GenzGaussianDataSet1D, \
+    GenzCornerpeakDataSet1D, GenzOscillatoryDataSet1D, GenzProductpeakDataSet1D
 
 
+class MethodEnum(str, Enum):
+    """
+    List of possible optimizers,
+    adam uses the `JAX` implementation, the other optimizers use the `scipy` implementation.
+    """
+    ADAM = "adam"
+    CG = "CG"
+    BFGS = "BFGS"
+    NEWTON_CG = "Newton-CG"
+    L_BFGS_B = "L-BFGS-B"
+
+
+
+@dataclass
 class Options:
     step_size: float
     num_epochs: int
     layer_sizes: List[List[int]]
     n: int
     data_class: Type[IntegrationDataset]
-    method: str
+    method: Union[MethodEnum, str]
 
-    def __init__(self, step_size, method, num_epochs, layers_sizes, n, data_class):
-        self.step_size = step_size
-        self.method = method
-        self.num_epochs = num_epochs
-        self.layer_sizes = layers_sizes
-        self.n = n
-        self.data_class = data_class
+

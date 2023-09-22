@@ -1,7 +1,6 @@
-import jax
 import jax.numpy as jnp
 
-from main import flatten_pytree, unflatten_params, get_info_from_list_of_tuples
+from model.param_util import get_info_from_list_of_tuples, flatten_pytree, unflatten_params
 
 
 def test_flatten():
