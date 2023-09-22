@@ -6,8 +6,8 @@ import seaborn as seaborn
 from jax import numpy as jnp
 from matplotlib import pyplot as plt
 
-from model.model import batch_apply_stein, apply_u_network
-from util import PlOTTING_PATH
+from bsn_jax.model.model import batch_apply_stein, apply_u_network
+from bsn_jax.util import PlOTTING_PATH
 
 
 def evaluate_model(params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray], x: jnp.ndarray, y: jnp.ndarray,

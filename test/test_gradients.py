@@ -1,6 +1,6 @@
 import jax.numpy as jnp
 
-from model import calc_div_u
+from bsn_jax.model import calc_div_u
 
 
 def test_gradient():

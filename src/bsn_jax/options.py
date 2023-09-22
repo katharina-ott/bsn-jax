@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Type, Union
 
-from data import IntegrationDataset, GenzContinuousDataSet1D, GenzDiscontinuousDataSet1D, GenzGaussianDataSet1D, \
-    GenzCornerpeakDataSet1D, GenzOscillatoryDataSet1D, GenzProductpeakDataSet1D
+from bsn_jax.data.data import IntegrationDataset
 
 
 class MethodEnum(str, Enum):

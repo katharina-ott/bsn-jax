@@ -5,9 +5,9 @@ import scipy
 from jax import numpy as jnp, grad
 from jax.example_libraries import optimizers
 
-from model.loss import loss, loss_param_array
-from model.model import apply_u_network
-from model.param_util import get_info_from_list_of_tuples, flatten_pytree, unflatten_params
+from bsn_jax.model.loss import loss, loss_param_array
+from bsn_jax.model.model import apply_u_network
+from bsn_jax.model.param_util import get_info_from_list_of_tuples, flatten_pytree, unflatten_params
 
 
 def train_stein_network(x: jnp.ndarray, score: jnp.ndarray, y: jnp.ndarray,

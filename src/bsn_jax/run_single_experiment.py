@@ -1,8 +1,8 @@
 from jax.random import PRNGKey
 
-from data import GenzContinuousDataSet1D
-from options import Options, MethodEnum
-from run_model import run
+from bsn_jax.data.data import GenzContinuousDataSet1D
+from bsn_jax.options import Options, MethodEnum
+from bsn_jax.run_model import run
 
 if __name__ == "__main__":
     prng_key = PRNGKey(0)

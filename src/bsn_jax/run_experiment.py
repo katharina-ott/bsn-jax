@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn
 
-from data import GenzContinuousDataSet1D
-from run_model import run
-from options import Options
-from util import PlOTTING_PATH
+from bsn_jax.data.data import GenzContinuousDataSet1D
+from bsn_jax.options import Options
+from bsn_jax.run_model import run
+from bsn_jax.util import PlOTTING_PATH
 
 
 def plot_relative_error(n_list: np.ndarray, relative_network_error: np.ndarray, relative_mcmc_error: np.ndarray):

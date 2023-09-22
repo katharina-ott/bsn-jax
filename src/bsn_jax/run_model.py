@@ -3,11 +3,10 @@ from typing import Tuple
 from jax import numpy as jnp
 from jax.random import PRNGKeyArray
 
-from evaluate import evaluate_model
-from model.model import init_network_params
-from train_model_loop import train_stein_network, train_stein_lbfgs
-
-from options import Options
+from bsn_jax.evaluate import evaluate_model
+from bsn_jax.model.model import init_network_params
+from bsn_jax.options import Options
+from bsn_jax.train_model_loop import train_stein_network, train_stein_lbfgs
 
 
 def run(opts: Options, prng_key: PRNGKeyArray) -> Tuple[float, float, float]:

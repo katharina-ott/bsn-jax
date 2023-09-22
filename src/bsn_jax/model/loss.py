@@ -3,8 +3,8 @@ from typing import List, Tuple, Callable
 from jax import numpy as jnp
 from jax._src.tree_util import PyTreeDef
 
-from model.model import batch_apply_stein
-from model.param_util import unflatten_params
+from bsn_jax.model.model import batch_apply_stein
+from bsn_jax.model.param_util import unflatten_params
 
 
 def loss(params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray], x: jnp.ndarray, y: jnp.ndarray,
