@@ -27,16 +27,17 @@ def plot_relative_error(n_list: np.ndarray, relative_network_error: np.ndarray, 
 
 if __name__ == "__main__":
     """
-    Compute estimates for the integral provided different numbers of data points. 
+    Compute estimates for the integral provided different numbers of data points.
     Experiment is run with three different seeds.
     """
-    opts = Options(step_size=0.01,
-                   method="L-BFGS-B",
-                   num_epochs=500,
-                   layer_sizes=[[1, 32], [32, 32], [32, 32], [32, 1]],
-                   n=5,
-                   data_class=GenzContinuousDataSet1D
-                   )
+    opts = Options(
+        step_size=0.01,
+        method="L-BFGS-B",
+        num_epochs=500,
+        layer_sizes=[[1, 32], [32, 32], [32, 32], [32, 1]],
+        n=5,
+        data_class=GenzContinuousDataSet1D,
+    )
     n_list = np.array([5, 10, 20, 40, 80, 160, 320])
     network_estimate_stack = []
     mcmc_estimate_stack = []

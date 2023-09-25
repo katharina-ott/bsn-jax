@@ -10,9 +10,14 @@ from bsn_jax.model.model import apply_u_network
 from bsn_jax.model.param_util import get_info_from_list_of_tuples, flatten_pytree, unflatten_params
 
 
-def train_stein_network(x: jnp.ndarray, score: jnp.ndarray, y: jnp.ndarray,
-                        params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray], num_epochs: int,
-                        step_size: float) -> List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray]:
+def train_stein_network(
+    x: jnp.ndarray,
+    score: jnp.ndarray,
+    y: jnp.ndarray,
+    params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray],
+    num_epochs: int,
+    step_size: float,
+) -> List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray]:
     """
     Optimizes the parameters using the adam optimizer
 
@@ -47,9 +52,13 @@ def train_stein_network(x: jnp.ndarray, score: jnp.ndarray, y: jnp.ndarray,
     return params
 
 
-def train_stein_lbfgs(x: jnp.ndarray, score: jnp.ndarray, y: jnp.ndarray,
-                      params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray], method: str) -> List[
-    Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray]:
+def train_stein_lbfgs(
+    x: jnp.ndarray,
+    score: jnp.ndarray,
+    y: jnp.ndarray,
+    params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray],
+    method: str,
+) -> List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray]:
     """
     Optimizes the parameters using any `scipy.optimize` method.
     :param x:
@@ -70,8 +79,7 @@ def train_stein_lbfgs(x: jnp.ndarray, score: jnp.ndarray, y: jnp.ndarray,
     I was unable to do parameters optimization with L-BFGS in jax.
     This needs to be looked into at a later point.
     """
-    out = scipy.optimize.minimize(fun, x0=params0, method=method, jac=jac, tol=1.e-15,
-                                  options={"maxiter": 2000})
+    out = scipy.optimize.minimize(fun, x0=params0, method=method, jac=jac, tol=1.0e-15, options={"maxiter": 2000})
     epoch_time = time.time() - start_time
     print(f"Run time optimization: {epoch_time}")
     print(f"Optimziations has converged: {out.success}")

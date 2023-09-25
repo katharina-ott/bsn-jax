@@ -34,8 +34,7 @@ def run(opts: Options, prng_key: PRNGKeyArray) -> Tuple[float, float, float]:
         params = train_stein_lbfgs(x, score, y, params, opts.method)
     true_integral = dataset.true_integration_value()
     mc_estimate = jnp.mean(y).item()
-    network_estimate = evaluate_model(params, x, y, x_test, score_test,
-                                      true_integral=true_integral,
-                                      mc_value=mc_estimate
-                                      )
+    network_estimate = evaluate_model(
+        params, x, y, x_test, score_test, true_integral=true_integral, mc_value=mc_estimate
+    )
     return network_estimate, mc_estimate, true_integral

@@ -10,10 +10,15 @@ from bsn_jax.model.model import batch_apply_stein, apply_u_network
 from bsn_jax.util import PlOTTING_PATH
 
 
-def evaluate_model(params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray], x: jnp.ndarray, y: jnp.ndarray,
-                   x_test: jnp.ndarray,
-                   score_test: jnp.ndarray,
-                   true_integral: float = None, mc_value: float = None):
+def evaluate_model(
+    params: List[Tuple[jnp.ndarray, jnp.ndarray] | jnp.ndarray],
+    x: jnp.ndarray,
+    y: jnp.ndarray,
+    x_test: jnp.ndarray,
+    score_test: jnp.ndarray,
+    true_integral: float = None,
+    mc_value: float = None,
+):
     out = batch_apply_stein(params, x_test, score_test, apply_u_network)
     seaborn.set_theme(style="whitegrid")
     palette = itertools.cycle(seaborn.color_palette())

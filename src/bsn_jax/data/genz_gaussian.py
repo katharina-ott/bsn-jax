@@ -109,9 +109,7 @@ def Genz_cornerpeak(x: np.ndarray, a: np.ndarray = None, u: np.ndarray = None) -
     return f.reshape((n, 1))
 
 
-def Genz_discontinuous(
-        x: np.ndarray, a: np.ndarray = None, u: np.ndarray = None
-) -> Any:
+def Genz_discontinuous(x: np.ndarray, a: np.ndarray = None, u: np.ndarray = None) -> Any:
     """Genz 'discontinuous' test function on [0,1]^d.
 
     :math:'f(x) = 0' if any :math:'x_i > u_i' and :math:'f(x) = \exp(\sum_{i=1}^d a_i x_i)' otherwise.
@@ -380,9 +378,7 @@ def integral_Genz_cornerpeak(a: np.ndarray, u: np.ndarray) -> Any:
         subsets_k = list(itertools.combinations(range(dim), k))
         for subset_ind in range(len(subsets_k)):
             a_subset = a[np.asarray(subsets_k[subset_ind], dtype=int)]
-            integral = integral + ((-1.0) ** (k + dim)) * (
-                    1.0 + np.sum(a) - np.sum(a_subset)
-            ) ** (-1)
+            integral = integral + ((-1.0) ** (k + dim)) * (1.0 + np.sum(a) - np.sum(a_subset)) ** (-1)
 
     return integral / (np.prod(a) * math.factorial(dim))
 
@@ -442,9 +438,7 @@ def integral_Genz_gaussian(a: np.ndarray, u: np.ndarray) -> Any:
 
     dim = len(a)
 
-    return np.pi ** (dim / 2) * np.prod(
-        (norm.cdf(np.sqrt(2) * a * (1.0 - u)) - norm.cdf(-np.sqrt(2) * a * u)) / a
-    )
+    return np.pi ** (dim / 2) * np.prod((norm.cdf(np.sqrt(2) * a * (1.0 - u)) - norm.cdf(-np.sqrt(2) * a * u)) / a)
 
 
 def integral_Genz_oscillatory(a: np.ndarray, u: np.ndarray) -> Any:
@@ -489,16 +483,12 @@ def integral_Genz_oscillatory(a: np.ndarray, u: np.ndarray) -> Any:
         subsets_k = list(itertools.combinations(range(dim), k))
         for subset_ind in range(len(subsets_k)):
             a_subset = a[np.asarray(subsets_k[subset_ind], dtype=int)]
-            integral = integral + ((-1.0) ** k) * hfunc(
-                (2.0 * np.pi * u[0]) + np.sum(a) - np.sum(a_subset)
-            )
+            integral = integral + ((-1.0) ** k) * hfunc((2.0 * np.pi * u[0]) + np.sum(a) - np.sum(a_subset))
 
     return integral / np.prod(a)
 
 
-def integral_Genz_productpeak(
-        a: np.ndarray, u: np.ndarray
-) -> Union[float, np.ndarray]:
+def integral_Genz_productpeak(a: np.ndarray, u: np.ndarray) -> Union[float, np.ndarray]:
     """Integral of the Genz 'product peak' test function against Lebesgue measure on [0,1]^d.
 
     Parameters
@@ -797,9 +787,9 @@ def integral_MorokoffCaflisch2() -> float:
 
 
 def uniform_to_gaussian(
-        func: Callable[[np.ndarray], np.ndarray],
-        mean: float = 0.0,
-        var: float = 1.0,
+    func: Callable[[np.ndarray], np.ndarray],
+    mean: float = 0.0,
+    var: float = 1.0,
 ) -> Callable[[np.ndarray], np.ndarray]:
     """
     Transforming an integrand suitable for integration against Lebesgue measure on [0,1]^d to an integrand

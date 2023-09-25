@@ -2,9 +2,21 @@ from typing import Any, Union
 
 import numpy as np
 
-from bsn_jax.data.genz_gaussian import Genz_continuous, uniform_to_gaussian, integral_Genz_continuous, Genz_cornerpeak, \
-    integral_Genz_cornerpeak, Genz_discontinuous, integral_Genz_discontinuous, Genz_gaussian, integral_Genz_gaussian, \
-    Genz_oscillatory, integral_Genz_oscillatory, Genz_productpeak, integral_Genz_productpeak
+from bsn_jax.data.genz_gaussian import (
+    Genz_continuous,
+    uniform_to_gaussian,
+    integral_Genz_continuous,
+    Genz_cornerpeak,
+    integral_Genz_cornerpeak,
+    Genz_discontinuous,
+    integral_Genz_discontinuous,
+    Genz_gaussian,
+    integral_Genz_gaussian,
+    Genz_oscillatory,
+    integral_Genz_oscillatory,
+    Genz_productpeak,
+    integral_Genz_productpeak,
+)
 
 
 def sample_standard_normal(n: int, dim: int):

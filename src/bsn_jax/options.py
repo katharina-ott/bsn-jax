@@ -10,12 +10,12 @@ class MethodEnum(str, Enum):
     List of possible optimizers,
     adam uses the `JAX` implementation, the other optimizers use the `scipy` implementation.
     """
+
     ADAM = "adam"
     CG = "CG"
     BFGS = "BFGS"
     NEWTON_CG = "Newton-CG"
     L_BFGS_B = "L-BFGS-B"
-
 
 
 @dataclass
@@ -26,5 +26,3 @@ class Options:
     n: int
     data_class: Type[IntegrationDataset]
     method: Union[MethodEnum, str]
-
-
